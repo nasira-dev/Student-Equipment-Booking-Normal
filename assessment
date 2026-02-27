@@ -1,0 +1,278 @@
+# -------------------- IMPORT SECTION --------------------
+
+import os      # Used to clear the console screen
+import sys     # Used to exit the program
+import time    # Used to pause execution (for better user experience)
+
+
+# -------------------- DATA STRUCTURES --------------------
+
+# equipment_list is a LIST containing predefined equipment items
+equipment_list = [
+    "Laptop 1", "Laptop 2",
+    "Projector A", "Projector B",
+    "Tablet 1", "Tablet 2"
+]
+
+# bookings is a LIST that will store all booking records (each booking is a DICTIONARY)
+bookings = []
+
+# booking_id_counter generates unique booking IDs
+booking_id_counter = 1
+
+
+# -------------------- UTILITY FUNCTIONS --------------------
+
+# This function clears the console screen
+# It works for both Windows and Mac/Linux systems
+def clear_screen():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+
+# This function displays the main menu options
+def display_menu():
+    print("------ Student Equipment Booking System ------")
+    print("1. Add New Equipment")
+    print("2. View All Equipment")
+    print("3. Record New Booking")
+    print("4. View All Bookings")
+    print("5. Search Booking by Student Name")
+    print("6. Search Booking by Equipment Name")
+    print("7. Cancel Booking")
+    print("8. View Bookings by Date")
+    print("9. Remove Equipment")
+    print("10. Exit")
+    print("----------------------------------------------")
+
+
+# -------------------- EQUIPMENT FUNCTIONS --------------------
+
+# This function allows user to add new equipment into the equipment_list
+def add_equipment():
+    name = input("Enter Equipment Name: ").strip()
+
+    # Check if equipment already exists
+    if name not in equipment_list:
+        equipment_list.append(name)
+        print("Equipment added successfully.")
+    else:
+        print("Equipment already exists.")
+
+    time.sleep(2)  # Pause for 2 seconds
+
+
+# This function displays all available equipment
+def view_equipment():
+    if not equipment_list:
+        print("No equipment available.")
+    else:
+        for item in equipment_list:
+            print(item)
+
+    time.sleep(2)
+
+
+# This function removes equipment from the equipment_list
+def remove_equipment():
+    name = input("Enter Equipment Name to Remove: ").strip()
+
+    # Check if equipment exists before removing
+    if name in equipment_list:
+        equipment_list.remove(name)
+        print("Equipment removed successfully.")
+    else:
+        print("Equipment not found.")
+
+    time.sleep(2)
+
+
+# -------------------- BOOKING FUNCTIONS --------------------
+
+# This function records a new booking
+def record_booking():
+    global booking_id_counter  # Allows modification of global ID counter
+
+    student_name = input("Enter Student Name: ").strip()
+    equipment_name = input("Enter Equipment Name: ").strip()
+    booking_date = input("Enter Booking Date (DD-MM-YYYY): ").strip()
+
+    # Check if equipment exists
+    if equipment_name not in equipment_list:
+        print("Equipment does not exist.")
+        time.sleep(2)
+        return
+
+    already_booked = False
+
+    # Check if equipment is already booked on the same date
+    for booking in bookings:
+        if booking["equipment"] == equipment_name and booking["date"] == booking_date:
+            already_booked = True
+
+    # If already booked, show warning
+    if already_booked:
+        print("Equipment already booked for this date.")
+    else:
+        # Create new booking dictionary
+        new_booking = {
+            "id": booking_id_counter,
+            "student": student_name,
+            "equipment": equipment_name,
+            "date": booking_date
+        }
+
+        # Add booking to bookings list
+        bookings.append(new_booking)
+
+        # Increase booking ID for next booking
+        booking_id_counter += 1
+
+        print("Booking recorded successfully.")
+
+    time.sleep(2)
+
+
+# This function displays all booking records
+def view_all_bookings():
+    if not bookings:
+        print("No bookings found.")
+    else:
+        for booking in bookings:
+            print(
+                booking["id"],
+                booking["student"],
+                booking["equipment"],
+                booking["date"]
+            )
+
+    time.sleep(2)
+
+
+# This function searches bookings by student name
+def search_by_student():
+    search_name = input("Enter Student Name to Search: ").strip()
+    found = False
+
+    for booking in bookings:
+        if booking["student"] == search_name:
+            print(
+                booking["id"],
+                booking["student"],
+                booking["equipment"],
+                booking["date"]
+            )
+            found = True
+
+    if not found:
+        print("No bookings found.")
+
+    time.sleep(2)
+
+
+# This function searches bookings by equipment name
+def search_by_equipment():
+    search_equipment = input("Enter Equipment Name to Search: ").strip()
+    found = False
+
+    for booking in bookings:
+        if booking["equipment"] == search_equipment:
+            print(
+                booking["id"],
+                booking["student"],
+                booking["equipment"],
+                booking["date"]
+            )
+            found = True
+
+    if not found:
+        print("No bookings found.")
+
+    time.sleep(2)
+
+
+# This function cancels a booking using Booking ID
+def cancel_booking():
+    try:
+        cancel_id = int(input("Enter Booking ID to Cancel: "))
+    except ValueError:
+        print("Invalid ID.")
+        time.sleep(2)
+        return
+
+    found = False
+
+    # Search booking by ID and remove it
+    for booking in bookings:
+        if booking["id"] == cancel_id:
+            bookings.remove(booking)
+            print("Booking cancelled successfully.")
+            found = True
+            break
+
+    if not found:
+        print("Booking ID not found.")
+
+    time.sleep(2)
+
+
+# This function displays bookings for a specific date
+def view_by_date():
+    search_date = input("Enter Date (DD-MM-YYYY): ").strip()
+    found = False
+
+    for booking in bookings:
+        if booking["date"] == search_date:
+            print(
+                booking["id"],
+                booking["student"],
+                booking["equipment"],
+                booking["date"]
+            )
+            found = True
+
+    if not found:
+        print("No bookings found for this date.")
+
+    time.sleep(2)
+
+
+# -------------------- MAIN PROGRAM LOOP --------------------
+
+# This function runs the entire system continuously
+def main():
+    while True:
+        clear_screen()     # Clear screen before showing menu
+        display_menu()     # Display system menu
+        choice = input("Enter your choice (1-10): ")
+
+        # Perform action based on user choice
+        if choice == '1':
+            add_equipment()
+        elif choice == '2':
+            view_equipment()
+        elif choice == '3':
+            record_booking()
+        elif choice == '4':
+            view_all_bookings()
+        elif choice == '5':
+            search_by_student()
+        elif choice == '6':
+            search_by_equipment()
+        elif choice == '7':
+            cancel_booking()
+        elif choice == '8':
+            view_by_date()
+        elif choice == '9':
+            remove_equipment()
+        elif choice == '10':
+            print("Exiting system...")
+            time.sleep(2)
+            sys.exit()   # Exit the program completely
+        else:
+            print("Invalid choice. Try again.")
+            time.sleep(2)
+
+
+# This ensures the program runs only when executed directly
+if __name__ == "__main__":
+    main()
