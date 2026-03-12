@@ -1,9 +1,8 @@
 # -------------------- IMPORT SECTION --------------------
-
-import os      # Used to clear the console screen
-import sys     # Used to exit the program
-import time    # Used to pause execution (for better user experience)
-
+import os      # Used to clear the screen in the terminal using os.system()
+import sys     # Used to completely exit the program using sys.exit()
+import time    # Used to pause the program for a few seconds using time.sleep() 
+from datetime import datetime   # Used to validate the booking date format
 
 # -------------------- DATA STRUCTURES --------------------
 
